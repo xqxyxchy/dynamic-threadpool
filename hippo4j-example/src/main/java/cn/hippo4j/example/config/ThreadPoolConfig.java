@@ -11,8 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
-import static cn.hippo4j.example.constant.GlobalTestConstant.MESSAGE_CONSUME;
-import static cn.hippo4j.example.constant.GlobalTestConstant.MESSAGE_PRODUCE;
+import static cn.hippo4j.example.constant.GlobalTestConstant.*;
 
 /**
  * Thread pool config.
@@ -58,6 +57,24 @@ public class ThreadPoolConfig {
                 .waitForTasksToCompleteOnShutdown(true)
                 .awaitTerminationMillis(5000)
                 .taskDecorator(new TaskDecoratorTest.ContextCopyingDecorator())
+                .build();
+    }
+
+    @Bean
+    @DynamicThreadPool
+    public ThreadPoolExecutor dynamicThreadPoolDataProduceExecutor() {
+        return ThreadPoolBuilder.builder()
+                .threadFactory(DATA_PRODUCE)
+                .dynamicPool()
+                .build();
+    }
+
+    @Bean
+    @DynamicThreadPool
+    public ThreadPoolExecutor dynamicThreadPoolDataConsumeExecutor() {
+        return ThreadPoolBuilder.builder()
+                .threadFactory(DATA_CONSUME)
+                .dynamicPool()
                 .build();
     }
 

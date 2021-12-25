@@ -27,6 +27,12 @@ public class RunStateHandlerTest {
     @Resource
     private ThreadPoolExecutor dynamicThreadPoolExecutor;
 
+    @Resource
+    private ThreadPoolExecutor dynamicThreadPoolDataProduceExecutor;
+
+    @Resource
+    private ThreadPoolExecutor dynamicThreadPoolDataConsumeExecutor;
+
     @PostConstruct
     @SuppressWarnings("all")
     public void runStateHandlerTest() {
@@ -37,6 +43,12 @@ public class RunStateHandlerTest {
 
         // 启动动态线程池模拟运行任务
         runTask(dynamicThreadPoolExecutor);
+
+        // 启动动态线程池模拟运行任务
+        runTask(dynamicThreadPoolDataProduceExecutor);
+
+        // 启动动态线程池模拟运行任务
+        runTask(dynamicThreadPoolDataConsumeExecutor);
 
     }
 
