@@ -6,6 +6,8 @@ import cn.hippo4j.common.monitor.MessageWrapper;
 import cn.hippo4j.common.toolkit.MessageConvert;
 import cn.hippo4j.common.web.base.Result;
 import cn.hippo4j.common.web.base.Results;
+import cn.hippo4j.config.model.biz.item.ItemQueryReqDTO;
+import cn.hippo4j.config.model.biz.item.ItemRespDTO;
 import cn.hippo4j.config.model.biz.monitor.MonitorActiveRespDTO;
 import cn.hippo4j.config.model.biz.monitor.MonitorQueryReqDTO;
 import cn.hippo4j.config.model.biz.monitor.MonitorRespDTO;
@@ -15,6 +17,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.*;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.util.List;
 
@@ -36,8 +40,13 @@ public class MonitorController {
 
     private final ThreadPoolTaskExecutor monitorThreadPoolTaskExecutor;
 
+    @PostMapping("/query/page")
+    public Result<IPage<MonitorRespDTO>> queryPage(@RequestBody MonitorQueryReqDTO reqDTO) {
+        return Results.success(hisRunDataService.queryPage(reqDTO));
+    }
+    
     @GetMapping
-    public Result<List<MonitorRespDTO>> queryMonitor(MonitorQueryReqDTO reqDTO) {
+    public Result<List<MonitorRespDTO>> queryMonitor(@RequestBody MonitorQueryReqDTO reqDTO) {
         List<MonitorRespDTO> monitorRespList = hisRunDataService.query(reqDTO);
         return Results.success(monitorRespList);
     }

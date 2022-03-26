@@ -27,11 +27,6 @@ public class MonitorRespDTO {
     private String instanceId;
 
     /**
-     * 已完成任务计数
-     */
-    private String completedTaskCount;
-
-    /**
      * 线程池id
      */
     private String tpId;
@@ -39,41 +34,51 @@ public class MonitorRespDTO {
     /**
      * 当前负载
      */
-    private String currentLoad;
+    private Long currentLoad;
 
     /**
      * 峰值负载
      */
-    private String peakLoad;
+    private Long peakLoad;
 
     /**
      * 线程数
      */
-    private String poolSize;
+    private Long poolSize;
 
     /**
      * 活跃线程数
      */
-    private String activeSize;
+    private Long activeSize;
 
     /**
      * 队列容量
      */
-    private String queueCapacity;
+    private Long queueCapacity;
 
     /**
      * 队列元素
      */
-    private String queueSize;
+    private Long queueSize;
 
     /**
      * 队列剩余容量
      */
-    private String queueRemainingCapacity;
+    private Long queueRemainingCapacity;
+
+    /**
+     * 已完成任务计数
+     */
+    private Long completedTaskCount;
 
     /**
      * 拒绝次数
      */
-    private String rejectCount;
+    private Long rejectCount;
+
+    /**
+     * 时间戳
+     */
+    private Long timestamp;
 
 }

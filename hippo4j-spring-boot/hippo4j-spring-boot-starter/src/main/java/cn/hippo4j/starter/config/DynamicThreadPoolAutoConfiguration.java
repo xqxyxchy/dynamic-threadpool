@@ -1,5 +1,16 @@
 package cn.hippo4j.starter.config;
 
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.env.ConfigurableEnvironment;
+
 import cn.hippo4j.common.api.ThreadDetailState;
 import cn.hippo4j.common.config.ApplicationContextHolder;
 import cn.hippo4j.core.executor.web.WebThreadPoolHandlerChoose;
@@ -11,29 +22,24 @@ import cn.hippo4j.core.toolkit.IdentifyUtil;
 import cn.hippo4j.core.toolkit.inet.InetUtils;
 import cn.hippo4j.starter.controller.PoolRunStateController;
 import cn.hippo4j.starter.controller.WebThreadPoolController;
-import cn.hippo4j.starter.core.*;
+import cn.hippo4j.starter.core.ConfigService;
+import cn.hippo4j.starter.core.DynamicThreadPoolPostProcessor;
+import cn.hippo4j.starter.core.ServerThreadPoolDynamicRefresh;
+import cn.hippo4j.starter.core.ThreadPoolConfigService;
+import cn.hippo4j.starter.core.ThreadPoolOperation;
 import cn.hippo4j.starter.event.ApplicationContentPostProcessor;
 import cn.hippo4j.starter.core.BaseThreadDetailStateHandler;
 import cn.hippo4j.core.executor.state.ThreadPoolRunStateHandler;
 import cn.hippo4j.core.executor.web.WebThreadPoolRunStateHandler;
 import cn.hippo4j.starter.monitor.ReportingEventExecutor;
 import cn.hippo4j.starter.monitor.collect.RunTimeInfoCollector;
+import cn.hippo4j.starter.monitor.collect.WebRunTimeInfoCollector;
 import cn.hippo4j.starter.monitor.send.HttpConnectSender;
 import cn.hippo4j.starter.monitor.send.MessageSender;
 import cn.hippo4j.starter.remote.HttpAgent;
 import cn.hippo4j.starter.remote.HttpScheduledHealthCheck;
 import cn.hippo4j.starter.remote.ServerHealthCheck;
 import lombok.AllArgsConstructor;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
  * DynamicTp auto configuration.
@@ -118,6 +124,12 @@ public class DynamicThreadPoolAutoConfiguration {
     @Bean
     public RunTimeInfoCollector runTimeInfoCollector() {
         return new RunTimeInfoCollector(properties);
+    }
+    
+    @Bean
+    public WebRunTimeInfoCollector webRunTimeInfoCollector(WebThreadPoolHandlerChoose webThreadPoolServiceChoose, 
+                                                     WebThreadPoolRunStateHandler webThreadPoolRunStateHandler) {
+        return new WebRunTimeInfoCollector(properties, webThreadPoolServiceChoose, webThreadPoolRunStateHandler);
     }
 
     @Bean

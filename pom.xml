@@ -26,7 +26,7 @@
     </modules>
 
     <properties>
-        <revision>1.1.0-RC1</revision>
+        <revision>1.1.0-2022032501</revision>
         <java.version>1.8</java.version>
 
         <dozer.version>6.5.0</dozer.version>
@@ -266,7 +266,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.1.0</version>
+                <version>1.2.7</version>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
                     <flattenMode>resolveCiFriendliesOnly</flattenMode>
@@ -295,7 +295,7 @@
                 <version>${spring-boot.version}</version>
             </plugin>
 
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>1.6</version>
@@ -307,7 +307,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -348,7 +348,7 @@
                 <javadoc.opts>-Xdoclint:none</javadoc.opts>
             </properties>
         </profile>
-    </profiles>
+	</profiles>
 
     <scm>
         <connection>scm:git@github.com:acmenlt/dynamic-threadpool</connection>

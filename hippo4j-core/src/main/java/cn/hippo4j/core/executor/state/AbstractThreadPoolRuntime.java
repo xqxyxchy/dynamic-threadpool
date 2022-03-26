@@ -20,7 +20,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @date 2021/12/7 19:44
  */
 public abstract class AbstractThreadPoolRuntime {
-
+    
     /**
      * Simple info.
      *
@@ -50,7 +50,7 @@ public abstract class AbstractThreadPoolRuntime {
         ThreadPoolExecutor pool = executorService.getExecutor();
         return getPoolRunState(threadPoolId, pool);
     }
-
+    
     /**
      * Get pool run state.
      *

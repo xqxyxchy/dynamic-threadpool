@@ -30,8 +30,9 @@ public class RunTimeInfoCollector extends AbstractThreadPoolRuntime implements C
     @Override
     public Message collectMessage() {
         AbstractMessage message = new RuntimeMessage();
-
         List<Message> runtimeMessages = Lists.newArrayList();
+        
+        // 动态线程池数据上报
         List<String> listThreadPoolId = GlobalThreadPoolManage.listThreadPoolId();
         for (String each : listThreadPoolId) {
             PoolRunStateInfo poolRunState = getPoolRunState(each);

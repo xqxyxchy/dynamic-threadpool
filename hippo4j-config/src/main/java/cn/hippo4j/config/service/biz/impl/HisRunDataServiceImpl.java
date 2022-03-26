@@ -1,11 +1,30 @@
 package cn.hippo4j.config.service.biz.impl;
 
+import static cn.hutool.core.date.DatePattern.NORM_TIME_PATTERN;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Lists;
+
 import cn.hippo4j.common.monitor.Message;
 import cn.hippo4j.common.monitor.RuntimeMessage;
 import cn.hippo4j.common.toolkit.GroupKey;
 import cn.hippo4j.config.config.ServerBootstrapProperties;
 import cn.hippo4j.config.mapper.HisRunDataMapper;
 import cn.hippo4j.config.model.HisRunDataInfo;
+import cn.hippo4j.config.model.ItemInfo;
 import cn.hippo4j.config.model.biz.monitor.MonitorActiveRespDTO;
 import cn.hippo4j.config.model.biz.monitor.MonitorQueryReqDTO;
 import cn.hippo4j.config.model.biz.monitor.MonitorRespDTO;
@@ -13,17 +32,7 @@ import cn.hippo4j.config.service.biz.HisRunDataService;
 import cn.hippo4j.config.toolkit.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static cn.hutool.core.date.DatePattern.NORM_TIME_PATTERN;
 
 /**
  * His run data service impl.
@@ -36,7 +45,24 @@ import static cn.hutool.core.date.DatePattern.NORM_TIME_PATTERN;
 public class HisRunDataServiceImpl extends ServiceImpl<HisRunDataMapper, HisRunDataInfo> implements HisRunDataService {
 
     private final ServerBootstrapProperties properties;
+    private final HisRunDataMapper hisRunDataMapper;
 
+    @Override
+    public IPage<MonitorRespDTO> queryPage(MonitorQueryReqDTO reqDTO) {
+        LambdaQueryWrapper<HisRunDataInfo> wrapper = Wrappers.lambdaQuery(HisRunDataInfo.class);
+        
+        wrapper.eq(!StringUtils.isEmpty(reqDTO.getTenantId()), HisRunDataInfo::getTenantId, reqDTO.getTenantId());
+        wrapper.eq(!StringUtils.isEmpty(reqDTO.getItemId()), HisRunDataInfo::getItemId, reqDTO.getItemId());
+        if(reqDTO.hasDatetime()) {
+            wrapper.between(HisRunDataInfo::getTimestamp, reqDTO.getDatetime()[0], reqDTO.getDatetime()[1]);
+        }
+        wrapper.like(!StringUtils.isEmpty(reqDTO.getTpId()), HisRunDataInfo::getTpId, reqDTO.getTpId());
+        wrapper.orderByDesc(HisRunDataInfo::getTimestamp);
+
+        Page<HisRunDataInfo> resultPage = hisRunDataMapper.selectPage((Page)reqDTO, wrapper);
+        return resultPage.convert(each -> BeanUtil.convert(each, MonitorRespDTO.class));
+    }
+    
     @Override
     public List<MonitorRespDTO> query(MonitorQueryReqDTO reqDTO) {
         Date currentDate = new Date();
